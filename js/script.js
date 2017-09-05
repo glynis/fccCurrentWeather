@@ -1,44 +1,68 @@
-/* glyn.is.950: 29.08.2017 - 04.09.2017 */
+/* glyn.is.950: 29.08.2017 - 05.09.2017 */
 
-// get users current location
-var x = document.getElementById('city');
+$(document).ready(function(){
 
-function getLocation() {
-    if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(showPosition);
-    } else {
-        x.innerHTML = "Geolocation is not supported by this browser.";
+// GET LOCATION
+$.getJSON("http://freegeoip.net/json/", function(data) {
+    var country = data.country_name;
+    var latitude = data.latitude;
+    var longitude = data.longitude;
+});
+
+// PLACE LOCATION
+$.get("http://freegeoip.net/json/", function (response) {
+  $("#city").html(response.city + ", " + response.region_name);
+  var searchQuery = (response.region_code + "/" + response.city + ".json/");
+// PULL WEATHER INFO
+  $.ajax({
+    url : "http://api.wunderground.com/api/9273aaedb10bc501/conditions/q/" + searchQuery,
+//    dataType : json,
+    success : function(data) {
+      var current = data[1][31];
+      $('#conditions').html(current);
     }
+  });
+//  $("#test").html(searchQuery);
+});
+
+// $('#conditions').html('partlycloudy');
+$('#temperature').html('26');
+
+// MATCH CONDITIONS
+var cond = "partlycloudy";
+if (cond == "clear") {
+    $('#icond').html('<i class="fa fa-sun-o"></i>');
+  } else if (cond == "partlycloudy") {
+    $('#icond').html('<i class="fa fa-cloud"></i>');
+  } else if (cond == "rain") {
+    $('#icond').html('<i class="fa fa-tint"></i>');
+  } else if (cond == "snow") {
+    $('#icond').html('<i class="fa fa-snowflake-o"></i>');
+  } else {
+    $('#icond').html('<i class="fa fa-question"></i>');
 }
-function showPosition(position) {
-    x.innerHTML = "Latitude: " + position.coords.latitude +
-    "Longitude: " + position.coords.longitude;
+
+var tempC = "26";
+if (tempC <= 0) {
+    $('#itemp').html('<i class="fa fa-thermometer-empty"></i>');
+  } else if (tempC >= 1 && tempC <= 10) {
+    $('#itemp').html('<i class="fa fa-thermometer-quarter"></i>');
+  } else if (tempC >=11 && tempC <= 20) {
+    $('#itemp').html('<i class="fa fa-thermometer-half"></i>');
+  } else if (tempC >= 21 && tempC <=30) {
+    $('#itemp').html('<i class="fa fa-thermometer-three-quarters"></i>');
+  } else if (tempC >= 31) {
+    $('#itemp').html('<i class="fa fa-thermometer-full"></i>');
+  } else {
+    $('#itemp').html('<i class="fa fa-question"></i>');
 }
 
-// place location in html
-document.getElementById('city').innerHTML = 'City';
+/* storm: http://fontawesome.io/icon/bolt/ */
 
-// pull weather information from wunderground
-// match conditions and temp with fa-icons
-// place fa-icon + temp + location in html
+// PLACE CONDITIONS
+// C-F TOGGLE
+});
 
-// toggle C + F buttons
-
-/*
-conditions: fa-icons
-  clear: http://fontawesome.io/icon/sun-o/
-  partlycloudy/mostlycloudy: http://fontawesome.io/icon/cloud/
-  rain: http://fontawesome.io/icon/tint/
-  ?storm: http://fontawesome.io/icon/bolt/
-  snow: http://fontawesome.io/icon/snowflake-o/
-
-temperature: fa-icons
-  below 0C: http://fontawesome.io/icon/thermometer-empty/
-  1C - 10C: http://fontawesome.io/icon/thermometer-quarter/
-  11 - 20C: http://fontawesome.io/icon/thermometer-half/
-  21C - 30C : http://fontawesome.io/icon/thermometer-three-quarters/
-  Above 30F:  http://fontawesome.io/icon/thermometer-full/
-*/
 
 /* notes from weatherGeeklet ~2014 .sh .py
 
