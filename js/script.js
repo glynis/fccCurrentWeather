@@ -1,12 +1,12 @@
 /* glyn.is.950: 29.08.2017 - 07.11.2017 */
 $(document).ready(function(){
     // GET LOCATION
-    $.get("http://freegeoip.net/json/", function (response) {
+    $.get("https://freegeoip.net/json/", function (response) {
         $("#city").html(response.city + ", " + response.region_name);
         var searchQuery = (response.region_code + "/" + response.city + ".json");
     // GET WEATHER FOR THIS LOCATION
         $.ajax({
-   		    url : "http://api.wunderground.com/api/9273aaedb10bc501/conditions/q/" + searchQuery,
+   		    url : "https://api.wunderground.com/api/9273aaedb10bc501/conditions/q/" + searchQuery,
 		    dataType : "jsonp",
 		    success : function(data) {
 		        var conditions = data.current_observation.weather;
